@@ -1,8 +1,8 @@
 import './css/styles.css';
 import './js/fetchCountries';
-import { Notify } from 'notiflix';
 import debounce from 'lodash.debounce';
 import { fetchCountries } from './js/fetchCountries';
+import { Notify } from 'notiflix';
 
 const refs = {
   searchBox: document.querySelector('#search-box'),
@@ -28,19 +28,21 @@ function isCountryFound(response) {
   //   console.log(numberCountries);
 
   if (numberCountries > 10) {
-    resetRender();
+    refs.countryList.innerHTML = '';
+    refs.countryInfo.innerHTML = '';
     return foundManyCountry();
   } else if (numberCountries === 1) {
-    resetRender();
+    refs.countryList.innerHTML = '';
     return renderCountryInfo(response);
-  } else if (numberCountries <= 10) {
-    resetRender();
+  } else if (numberCountries > 1 && numberCountries <= 10) {
+    refs.countryInfo.innerHTML = '';
     return renderCountryList(response);
   }
 }
 
 function onFetchError() {
-  resetRender();
+  refs.countryList.innerHTML = '';
+  refs.countryInfo.innerHTML = '';
   return Notify.failure('Oops, there is no country with that name');
 }
 
@@ -51,15 +53,14 @@ function foundManyCountry() {
 }
 
 function renderCountryInfo(country) {
+  const flag = country[0].flags.svg;
   const name = country[0].name.official;
   const capital = country[0].capital;
   const population = country[0].population;
-  const flag = country[0].flags.svg;
-  const alt = country[0].flags.alt;
-  const languages = Object.values(country[0].languages).join(', ');
+  const languages = Object.values(country[0].languages);
 
   const markup = `<div class="wrap">
-  <img class="country-info__flag" src="${flag}" alt="${alt}" width=30em>
+  <img class="country-info__flag" src="${flag}" alt="flag of ${name}" width=30em>
   <h2 class="country-info__title">${name}</h2>
   </div>
   <p class="country-info__text"><span>Capital:</span> ${capital}</p>
@@ -73,16 +74,11 @@ function renderCountryList(countries) {
   const markup = countries
     .map(country => {
       return `<li class="country-list__item">
-  <img class="country-list__flag" src="${country.flags.svg}" alt="${country.alt}" width=30em>
+  <img class="country-list__flag" src="${country.flags.svg}" alt="" width=30em>
   <p class="country-list__text">${country.name.official}</p>
   </li>`;
     })
     .join('');
 
   return (refs.countryList.innerHTML = markup);
-}
-
-function resetRender() {
-  refs.countryList.innerHTML = '';
-  refs.countryInfo.innerHTML = '';
 }
