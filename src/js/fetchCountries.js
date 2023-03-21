@@ -5,9 +5,12 @@ const searchParams = new URLSearchParams({
 // console.log(searchParams.toString());
 
 function fetchCountries(countryName) {
-  return fetch(`${BASE_URL}/${countryName}?${searchParams}`).then(response =>
-    response.json()
-  );
+  return fetch(`${BASE_URL}/${countryName}?${searchParams}`).then(response => {
+    if (!response.ok) {
+      throw new Error(response.status);
+    }
+    return response.json();
+  });
 }
 
 export { fetchCountries };
