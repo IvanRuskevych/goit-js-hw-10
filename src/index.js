@@ -41,6 +41,8 @@ function isCountryFound(response) {
 }
 
 function onFetchError() {
+  refs.countryList.innerHTML = '';
+  refs.countryInfo.innerHTML = '';
   return Notify.failure('Oops, there is no country with that name');
 }
 
