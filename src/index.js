@@ -20,6 +20,7 @@ refs.searchBox.addEventListener(
 function onSearchCountry(e) {
   countryName = e.target.value.trim();
   //   console.log(countryName);
+   resetRender();
   if (!countryName == '') {
     return fetchCountries(countryName).then(isCountryFound).catch(onFetchError);
   }
